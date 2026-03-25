@@ -1,0 +1,18 @@
+# Pipeline runtime files
+config.ini
+state.txt
+pipeline.log
+output/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
