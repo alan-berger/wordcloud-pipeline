@@ -1,0 +1,112 @@
+# wordcloud_pipeline config.ini
+# -----------------------------------------------------------------------
+# Copy this file to config.ini and fill in the values for your use case.
+# All file paths can be absolute or relative to the script directory.
+# -----------------------------------------------------------------------
+
+[pipeline]
+
+# URL template for the text files to fetch.
+# Use {n} as the placeholder for the incrementing number.
+#
+# Security Now example:
+#   url_template = https://www.grc.com/sn/sn-{n}.txt
+#
+# Generic example (a blog that publishes weekly text summaries):
+#   url_template = https://example.com/posts/post-{n}.txt
+url_template = https://www.grc.com/sn/sn-{n}.txt
+
+# The last number you have already processed manually.
+# The pipeline will start checking from seed_number + 1.
+# Once state.txt is created after the first successful run, this value is ignored.
+seed_number = 1069
+
+# Directory where wordcloud images will be written.
+output_dir = /home/username/public_html/images
+
+# Filename for the always-current "latest" image.
+# This is overwritten on every successful run.
+latest_filename = wordcloud-latest.png
+
+# Filename pattern for the per-number archive images.
+# Use {n} as the placeholder.
+archive_filename = wordcloud-{n}.png
+
+
+[wordcloud]
+
+# Image dimensions in pixels.
+width  = 800
+height = 800
+
+# Background colour (any CSS colour name or hex value).
+background = white
+
+# Path to a mask image. The wordcloud will be shaped to the non-white
+# areas of this image. Leave blank to generate a plain rectangular cloud.
+mask = ./assets/circle800.jpg
+
+# Path to a plain text stopwords file (one word per line).
+# Leave blank to use wordcloud's built-in English stopwords.
+stopwords = ./assets/stop_words_english.txt
+
+# Path to the wordcloud_cli binary.
+# Leave blank to auto-detect (searches PATH then ~/.local/bin/wordcloud_cli).
+cli_path =
+
+
+[metadata]
+
+# Optional regex patterns to extract a title and date from the text file.
+# Each pattern must contain a named capture group called 'value'.
+#
+# Security Now transcripts have a header block like:
+#   DATE:    March 10, 2026
+#   TITLE:   You can't hide from LLMs
+#
+# The defaults below match that format exactly.
+# Change or leave blank if your source files have a different structure,
+# or if you don't need metadata extraction.
+
+title_pattern = ^TITLE:\s+(?P<value>.+)$
+date_pattern  = ^DATE:\s+(?P<value>.+)$
+
+# strptime format string for parsing the date extracted by date_pattern.
+# Default matches "March 10, 2026". See:
+# https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+date_format = %B %d, %Y
+
+
+[html_patch]
+
+# Set to true to enable patching of an HTML/PHP file with episode metadata
+# after each successful wordcloud generation.
+#
+# IMPORTANT: The regex used for patching is hardcoded in the patch_html_file()
+# function in wordcloud_pipeline.py and is specific to a particular HTML
+# structure. If you want to use this feature, you will need to adapt that
+# function to match your own page layout. See the comments in the source code.
+enabled = false
+
+# Absolute path to the HTML/PHP file to patch.
+file = /home/username/public_html/index.php
+
+# Number of rolling backups to keep alongside the patched file.
+# Backups are named index.php.bak1 (newest) through index.php.bak{n} (oldest).
+backup_count = 3
+
+
+[ntfy]
+
+# Set to true to send a push notification via ntfy after each successful run.
+# The notification body contains the full pipeline log for that item.
+# Install the ntfy app: https://ntfy.sh
+enabled = false
+
+# ntfy server URL. Use https://ntfy.sh for the public hosted service,
+# or your own self-hosted instance URL.
+server = https://ntfy.sh
+
+# Your ntfy topic name. Choose something unique and hard to guess if using
+# the public ntfy.sh server, as topics are public by default.
+topic = your-unique-topic-name-here
