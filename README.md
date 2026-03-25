@@ -46,8 +46,8 @@ pip install wordcloud
 1. Clone or download this repository into a directory on your server:
 
 ```bash
-git clone https://github.com/alan-berger/wordcloud_pipeline.git
-cd wordcloud_pipeline
+git clone https://github.com/alan-berger/wordcloud-pipeline.git
+cd wordcloud-pipeline
 ```
 
 2. Copy the example config and edit it:
