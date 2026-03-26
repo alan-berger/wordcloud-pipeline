@@ -238,7 +238,7 @@ def parse_metadata(text: str, n: int, cfg: configparser.ConfigParser) -> dict:
                     meta["date_version"] = dt.strftime("%Y%m%d")
                 except ValueError:
                     log(f"Warning: could not parse date '{raw_date}' with format '{date_format}'")
-                    meta["date_display"] = raw_date
+                    meta["date_display"] = html.escape(raw_date, quote=False)
             except IndexError:
                 log("Warning: date_pattern matched but has no 'value' group — check your regex")
 
