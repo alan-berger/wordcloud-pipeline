@@ -185,18 +185,14 @@ def fetch_text(url_template: str, n: int) -> str | None:
 # ---------------------------------------------------------------------------
 # Metadata parsing
 # ---------------------------------------------------------------------------
-
 def parse_metadata(text: str, n: int, cfg: configparser.ConfigParser) -> dict:
     """
     Optionally extract a title and date from the text file using the
     regex patterns defined in config.ini [metadata].
-
     Both patterns must use a named capture group called 'value', e.g.:
         title_pattern = ^TITLE:\\s+(?P<value>.+)$
         date_pattern  = ^DATE:\\s+(?P<value>.+)$
-
     If a pattern is blank or does not match, sensible fallback values are used.
-
     Returns a dict with:
         n               int    1069
         title           str    "You can't hide from LLMs"
@@ -211,22 +207,18 @@ def parse_metadata(text: str, n: int, cfg: configparser.ConfigParser) -> dict:
         "date_display": "",
         "date_version": "",
     }
-
     title_pattern = cfg.get("metadata", "title_pattern", fallback="").strip()
     date_pattern  = cfg.get("metadata", "date_pattern",  fallback="").strip()
     date_format   = cfg.get("metadata", "date_format",   fallback="%B %d, %Y").strip()
-
     if title_pattern:
         m = re.search(title_pattern, text, re.MULTILINE)
         if m:
             try:
                 title = m.group("value").strip()
                 meta["title"] = title
-                escaped = html.escape(title, quote=False)
-                meta["title_html"] = escaped.replace("&#x27;", "&#39;")
+                meta["title_html"] = html.escape(title, quote=False).replace("'", "&#39;")
             except IndexError:
                 log("Warning: title_pattern matched but has no 'value' group — check your regex")
-
     if date_pattern:
         m = re.search(date_pattern, text, re.MULTILINE)
         if m:
@@ -241,7 +233,6 @@ def parse_metadata(text: str, n: int, cfg: configparser.ConfigParser) -> dict:
                     meta["date_display"] = html.escape(raw_date, quote=False)
             except IndexError:
                 log("Warning: date_pattern matched but has no 'value' group — check your regex")
-
     return meta
 
 # ---------------------------------------------------------------------------
